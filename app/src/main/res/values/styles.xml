@@ -1,0 +1,8 @@
+<resources>
+    <style name="Theme.HanimeMpvEx" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:fontFamily">sans</item>
+        <item name="colorPrimary">#6750A4</item>
+        <item name="colorPrimaryVariant">#6750A4</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+    </style>
+</resources>
