@@ -14,7 +14,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.textfield.TextInputEditText
 import org.jsoup.Jsoup
-import java.net.URI
 import java.util.concurrent.Executors
 
 class MainActivity : AppCompatActivity() {
@@ -35,6 +34,27 @@ class MainActivity : AppCompatActivity() {
         findViewById<Button>(R.id.pasteButton).setOnClickListener { paste() }
         findViewById<Button>(R.id.clearButton).setOnClickListener { urlInput.setText(""); status.text = "等待视频地址" }
         play.setOnClickListener { resolveAndPlay() }
+
+        handleIncomingIntent(intent)
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleIncomingIntent(intent)
+    }
+
+    private fun handleIncomingIntent(incoming: Intent) {
+        if (incoming.action != Intent.ACTION_SEND || incoming.type != "text/plain") return
+        val shared = incoming.getStringExtra(Intent.EXTRA_TEXT).orEmpty()
+        val url = Regex("https?://(?:www\\.)?hanime1\\.(?:com|me)/[^\\s]+", RegexOption.IGNORE_CASE)
+            .find(shared)?.value?.trimEnd('.', ',', ')', ']', '}', '。', '，')
+        if (url.isNullOrBlank()) {
+            status.text = "分享内容里没有找到 Hanime1 链接"
+            return
+        }
+        urlInput.setText(url)
+        resolveAndPlay()
     }
 
     private fun paste() {
